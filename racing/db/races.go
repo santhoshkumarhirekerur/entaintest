@@ -2,11 +2,13 @@ package db
 
 import (
 	"database/sql"
-	"github.com/golang/protobuf/ptypes"
-	_ "github.com/mattn/go-sqlite3"
+	"entaintest/racing/proto/racing"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/golang/protobuf/ptypes"
+	_ "github.com/mattn/go-sqlite3"
 
 	"git.neds.sh/matty/entain/racing/proto/racing"
 )
@@ -18,6 +20,11 @@ type RacesRepo interface {
 
 	// List will return a list of races.
 	List(filter *racing.ListRacesRequestFilter) ([]*racing.Race, error)
+
+	// List View
+
+	// List will return a list of races.
+	ListView(filter *racing.ListRacesRequestFilter) ([]*racing.Race, error)
 }
 
 type racesRepo struct {
@@ -59,6 +66,25 @@ func (r *racesRepo) List(filter *racing.ListRacesRequestFilter) ([]*racing.Race,
 	}
 
 	return r.scanRaces(rows)
+}
+
+func (r *racesRepo) ListView(filter *racing.ListRacesRequestFilter) ([]*racing.Race, error) {
+	var (
+		err   error
+		query string
+		args  []interface{}
+	)
+
+	query = getRaceViewQueries()[racesList]
+
+	query, args = r.applyFilter(query, filter)
+
+	rows, err := r.db.Query(query, args...)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.scanRacesView(rows)
 }
 
 func (r *racesRepo) applyFilter(query string, filter *racing.ListRacesRequestFilter) (string, []interface{}) {
@@ -109,6 +135,27 @@ func (m *racesRepo) scanRaces(
 		}
 
 		race.AdvertisedStartTime = ts
+
+		races = append(races, &race)
+	}
+
+	return races, nil
+}
+
+func (m *racesRepo) scanRacesView(
+	rows *sql.Rows,
+) ([]*racing.RaceView, error) {
+	var races []*racing.RaceView
+
+	for rows.Next() {
+		var race racing.RaceView
+
+		if err := rows.Scan(&race.Number, &race.name); err != nil {
+			if err == sql.ErrNoRows {
+				return nil, nil
+			}
+			return nil, err
+		}
 
 		races = append(races, &race)
 	}

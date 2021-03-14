@@ -11,11 +11,25 @@ service Racing {
   }
 }
 
+enum RaceView {
+  // Not specified, equivalent to BASIC.
+  RACE_VIEW_UNSPECIFIED = 0;
+
+  // Server responses only include race name and number
+  // The default value.
+  BASIC = 1;
+
+  // Full representation of the RACE is returned in server responses,
+  // including contents of the RACE.
+  FULL = 2;
+}
+
 /* Requests/Responses */
 
 // Request for ListRaces call.
 message ListRacesRequest {
   ListRacesRequestFilter filter = 1;
+  RaceView view = 2;
 }
 
 // Response to ListRaces call.
