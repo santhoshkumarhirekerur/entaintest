@@ -23,8 +23,8 @@ func getRaceViewQueries() map[string]string {
 	return map[string]string{
 		racesList: `
 			SELECT 
-				name, 
-				number
+				number,
+				name
 			FROM races
 		`,
 	}

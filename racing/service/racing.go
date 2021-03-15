@@ -10,6 +10,7 @@ import (
 type Racing interface {
 	// ListRaces will return a collection of races.
 	ListRaces(ctx context.Context, in *racing.ListRacesRequest) (*racing.ListRacesResponse, error)
+	//ListView(filter *racing.ListRacesRequestFilter) ([]*racing.Race, error)
 }
 
 // racingService implements the Racing interface.

@@ -2,7 +2,7 @@ package db
 
 import (
 	"database/sql"
-	"entaintest/racing/proto/racing"
+
 	"strings"
 	"sync"
 	"time"
@@ -119,9 +119,10 @@ func (m *racesRepo) scanRaces(
 
 	for rows.Next() {
 		var race racing.Race
+
 		var advertisedStart time.Time
 
-		if err := rows.Scan(&race.Id, &race.MeetingId, &race.Name, &race.Number, &race.Visible, &advertisedStart); err != nil {
+		if err := rows.Scan(&race.RaceFull.Id, &race.RaceFull.MeetingId, &race.Name, &race.Number, &race.RaceFull.Visible, &advertisedStart); err != nil {
 			if err == sql.ErrNoRows {
 				return nil, nil
 			}
@@ -134,7 +135,7 @@ func (m *racesRepo) scanRaces(
 			return nil, err
 		}
 
-		race.AdvertisedStartTime = ts
+		race.RaceFull.AdvertisedStartTime = ts
 
 		races = append(races, &race)
 	}
@@ -144,13 +145,13 @@ func (m *racesRepo) scanRaces(
 
 func (m *racesRepo) scanRacesView(
 	rows *sql.Rows,
-) ([]*racing.RaceView, error) {
-	var races []*racing.RaceView
+) ([]*racing.Race, error) {
+	var races []*racing.Race
 
 	for rows.Next() {
-		var race racing.RaceView
+		var race racing.Race
 
-		if err := rows.Scan(&race.Number, &race.name); err != nil {
+		if err := rows.Scan(&race.Number, &race.Name); err != nil {
 			if err == sql.ErrNoRows {
 				return nil, nil
 			}
