@@ -6,6 +6,15 @@ import "google/protobuf/timestamp.proto";
 service Racing {
   // ListRaces will return a collection of all races.
   rpc ListRaces(ListRacesRequest) returns (ListRacesResponse) {}
+  // Returns a specific Race  .
+  rpc GetRace(GetRaceRequest) returns (ListRacesResponse) {}
+
+}
+
+// Request message for GetShelf method.
+message GetRaceRequest {
+  // The ID of the race resource to retrieve.
+  int64 id = 1;
 }
 
 /* Requests/Responses */

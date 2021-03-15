@@ -9,6 +9,20 @@ service Racing {
   rpc ListRaces(ListRacesRequest) returns (ListRacesResponse) {
     option (google.api.http) = { post: "/v1/list-races", body: "*" };
   }
+
+  // Returns a specific Race  .
+  rpc GetRace(GetRaceRequest) returns (ListRacesResponse) {
+    
+    //   curl http://DOMAIN_NAME/v1/races/1
+    option (google.api.http) = { get: "/v1/races/{id}" };
+  }
+
+}
+
+// Request message for GetShelf method.
+message GetRaceRequest {
+  // The ID of the shelf resource to retrieve.
+  int64 id = 1;
 }
 
 /* Requests/Responses */
