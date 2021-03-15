@@ -1,72 +1,24 @@
-## Entain BE Technical Test
+### ### NOTE:
 
-This test has been designed to demonstrate your ability and understanding of technologies commonly used at Entain. 
+I am new to golang.  Used my Java backgroud technique to resolve all the problems. Its great learning experience for me.
 
-Please treat the services provided as if they would live in a real-world environment.
+I have created indivisual branch for every tasks. branch links are below.  Every task details is documented in 'readme' folder. read me file having all details about the task. The file also contains manual integration test details.  
+ 
+ 
 
-### Directory Structure
+BRANCH LINKS:
 
-- `api`: A basic REST gateway, forwarding requests onto service(s).
-- `racing`: A very bare-bones racing service.
+https://github.com/santhoshkumarhirekerur/entaintest/tree/task-1
+https://github.com/santhoshkumarhirekerur/entaintest/tree/task-2
+https://github.com/santhoshkumarhirekerur/entaintest/tree/task-3
+https://github.com/santhoshkumarhirekerur/entaintest/tree/task-5
+https://github.com/santhoshkumarhirekerur/entaintest/tree/task-6
+https://github.com/santhoshkumarhirekerur/entaintest/tree/task-4
 
-```
-entain/
-├─ api/
-│  ├─ proto/
-│  ├─ main.go
-├─ racing/
-│  ├─ db/
-│  ├─ proto/
-│  ├─ service/
-│  ├─ main.go
-├─ README.md
-```
+PULL REQUEST
+------------------
 
-### Getting Started
-
-1. Install Go (latest).
-
-```bash
-brew install go
-```
-
-... or [see here](https://golang.org/doc/install).
-
-2. Install `protoc`
-
-```
-brew install protobuf
-```
-
-... or [see here](https://grpc.io/docs/protoc-installation/).
-
-2. In a terminal window, start our racing service...
-
-```bash
-cd ./racing
-
-go build && ./racing
-➜ INFO[0000] gRPC server listening on: localhost:9000
-```
-
-3. In another terminal window, start our api service...
-
-```bash
-cd ./api
-
-go build && ./api
-➜ INFO[0000] API server listening on: localhost:8000
-```
-
-4. Make a request for races... 
-
-```bash
-curl -X "POST" "http://localhost:8000/v1/list-races" \
-     -H 'Content-Type: application/json' \
-     -d $'{
-  "filter": {}
-}'
-```
+https://github.com/santhoshkumarhirekerur/entaintest/pulls
 
 ### Changes/Updates Required
 
