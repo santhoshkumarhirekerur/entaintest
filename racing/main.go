@@ -2,13 +2,17 @@ package main
 
 import (
 	"database/sql"
+
 	"flag"
+	"net"
+
+	"git.neds.sh/matty/entain/racing/proto/sports"
+
 	"git.neds.sh/matty/entain/racing/db"
 	"git.neds.sh/matty/entain/racing/proto/racing"
 	"git.neds.sh/matty/entain/racing/service"
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
-	"net"
 )
 
 var (
@@ -39,12 +43,24 @@ func run() error {
 		return err
 	}
 
+	sportsRepo := db.NewSportsRepo(racingDB)
+	if err := sportsRepo.Init(); err != nil {
+		return err
+	}
+
 	grpcServer := grpc.NewServer()
 
 	racing.RegisterRacingServer(
 		grpcServer,
 		service.NewRacingService(
 			racesRepo,
+		),
+	)
+
+	sports.RegisterSportsServer(
+		grpcServer,
+		service.NewSportsService(
+			sportsRepo,
 		),
 	)
 
