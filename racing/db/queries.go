@@ -18,3 +18,14 @@ func getRaceQueries() map[string]string {
 		`,
 	}
 }
+
+func getRaceViewQueries() map[string]string {
+	return map[string]string{
+		racesList: `
+			SELECT 
+				number,
+				name
+			FROM races
+		`,
+	}
+}

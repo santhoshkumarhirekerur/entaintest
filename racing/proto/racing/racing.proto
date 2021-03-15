@@ -6,17 +6,40 @@ import "google/protobuf/timestamp.proto";
 service Racing {
   // ListRaces will return a collection of all races.
   rpc ListRaces(ListRacesRequest) returns (ListRacesResponse) {}
+
+  // ListRaces will return a collection of all races.
+  //rpc ListRacesView(ListRacesRequest) returns (ListRacesResponseView) {}
+
 }
 
 /* Requests/Responses */
 
+enum RaceView {
+  // Not specified, equivalent to BASIC.
+  RACE_VIEW_UNSPECIFIED = 0;
+
+  // Server responses only include race name and number
+  // The default value.
+  BASIC = 1;
+
+  // Full representation of the RACE is returned in server responses,
+  // including contents of the RACE.
+  FULL = 2;
+}
+
 message ListRacesRequest {
   ListRacesRequestFilter filter = 1;
+  RaceView view = 2;
 }
 
 // Response to ListRaces call.
 message ListRacesResponse {
   repeated Race races = 1;
+}
+
+// Response to ListRaces call.
+message ListRacesResponseView {
+  repeated Race RaceAbstract = 1;
 }
 
 // Filter for listing races.
@@ -26,19 +49,30 @@ message ListRacesRequestFilter {
 
 /* Resources */
 
-// A race resource.
-message Race {
+message RaceFull 
+{
   // ID represents a unique identifier for the race.
   int64 id = 1;
   // MeetingID represents a unique identifier for the races meeting.
   int64 meeting_id = 2;
   // Name is the official name given to the race.
-  string name = 3;
-  // Number represents the number of the race.
-  int64 number = 4;
+
   // Visible represents whether or not the race is visible.
-  bool visible = 5;
+  bool visible = 3;
   // AdvertisedStartTime is the time the race is advertised to run.
-  google.protobuf.Timestamp advertised_start_time = 6;
+  google.protobuf.Timestamp advertised_start_time = 4;
+
 }
+
+// A race resource.
+message Race {
+  
+  string name = 1;
+  // Number represents the number of the race.
+  int64 number = 2;
+   
+  RaceFull raceFull = 3;
+
+}
+
 

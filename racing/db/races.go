@@ -2,11 +2,13 @@ package db
 
 import (
 	"database/sql"
-	"github.com/golang/protobuf/ptypes"
-	_ "github.com/mattn/go-sqlite3"
+
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/golang/protobuf/ptypes"
+	_ "github.com/mattn/go-sqlite3"
 
 	"git.neds.sh/matty/entain/racing/proto/racing"
 )
@@ -18,6 +20,11 @@ type RacesRepo interface {
 
 	// List will return a list of races.
 	List(filter *racing.ListRacesRequestFilter) ([]*racing.Race, error)
+
+	// List View
+
+	// List will return a list of races.
+	ListView(filter *racing.ListRacesRequestFilter) ([]*racing.Race, error)
 }
 
 type racesRepo struct {
@@ -61,6 +68,25 @@ func (r *racesRepo) List(filter *racing.ListRacesRequestFilter) ([]*racing.Race,
 	return r.scanRaces(rows)
 }
 
+func (r *racesRepo) ListView(filter *racing.ListRacesRequestFilter) ([]*racing.Race, error) {
+	var (
+		err   error
+		query string
+		args  []interface{}
+	)
+
+	query = getRaceViewQueries()[racesList]
+
+	query, args = r.applyFilter(query, filter)
+
+	rows, err := r.db.Query(query, args...)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.scanRacesView(rows)
+}
+
 func (r *racesRepo) applyFilter(query string, filter *racing.ListRacesRequestFilter) (string, []interface{}) {
 	var (
 		clauses []string
@@ -93,9 +119,10 @@ func (m *racesRepo) scanRaces(
 
 	for rows.Next() {
 		var race racing.Race
+
 		var advertisedStart time.Time
 
-		if err := rows.Scan(&race.Id, &race.MeetingId, &race.Name, &race.Number, &race.Visible, &advertisedStart); err != nil {
+		if err := rows.Scan(&race.RaceFull.Id, &race.RaceFull.MeetingId, &race.Name, &race.Number, &race.RaceFull.Visible, &advertisedStart); err != nil {
 			if err == sql.ErrNoRows {
 				return nil, nil
 			}
@@ -108,7 +135,28 @@ func (m *racesRepo) scanRaces(
 			return nil, err
 		}
 
-		race.AdvertisedStartTime = ts
+		race.RaceFull.AdvertisedStartTime = ts
+
+		races = append(races, &race)
+	}
+
+	return races, nil
+}
+
+func (m *racesRepo) scanRacesView(
+	rows *sql.Rows,
+) ([]*racing.Race, error) {
+	var races []*racing.Race
+
+	for rows.Next() {
+		var race racing.Race
+
+		if err := rows.Scan(&race.Number, &race.Name); err != nil {
+			if err == sql.ErrNoRows {
+				return nil, nil
+			}
+			return nil, err
+		}
 
 		races = append(races, &race)
 	}
