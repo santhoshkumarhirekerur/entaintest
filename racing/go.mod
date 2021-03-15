@@ -8,7 +8,8 @@ require (
 	github.com/mattn/go-sqlite3 v1.14.6
 	github.com/sirupsen/logrus v1.8.0
 	golang.org/x/net v0.0.0-20210226172049-e18ecbb05110
-	google.golang.org/genproto v0.0.0-20210226172003-ab064af71705
+	golang.org/x/sys v0.0.0-20210314195730-07df6a141424 // indirect
+	google.golang.org/genproto v0.0.0-20210312152112-fc591d9ea70f
 	google.golang.org/grpc v1.36.0
 	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.1.0
 	google.golang.org/protobuf v1.25.1-0.20201208041424-160c7477e0e8
